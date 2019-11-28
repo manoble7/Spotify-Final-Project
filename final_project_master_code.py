@@ -38,12 +38,13 @@ def BPM():
 
     good_songs = list()
     id_list = list()
+    features = list()
+    good_song_times = list()
     loops_50 = len(tracks['items'])//50
     loops_remainder = len(tracks['items']) % 50
     counter = 0
-    features = list()
     BPM = 125
-    good_song_times = list()
+    
 
     for i in range(loops_50):
         for k in range(50):
@@ -65,7 +66,8 @@ def BPM():
 
 
 def playlist_gen(good_songs, good_song_times, time = 3600000):
-      '''
+    
+    '''
     This function takes all of the songs that have the correct BPM and creates
     a playlist of the specified length
 
@@ -78,9 +80,7 @@ def playlist_gen(good_songs, good_song_times, time = 3600000):
 
         none
     '''
-    credentials = oauth2.SpotifyClientCredentials(client_id="ec9bf5bbdcda4e3ebb4e5b3fe719f1ea", client_secret="2a0aede0c27246b19dff50617b4723b4")
-    token = credentials.get_access_token()
-    spotify = spotipy.Spotify(auth=token)
+
     playlist_time = 0
     playlist = list()
 
@@ -91,10 +91,24 @@ def playlist_gen(good_songs, good_song_times, time = 3600000):
         good_songs.remove(choice)
         playlist_time = playlist_time + good_song_times[index]
         good_song_times.remove(good_song_times[index])
-
-    spotify.user_playlist_create(user = 'manoble3' , name = "new", public=True)      
     
+    user = 'manoble3'
+    token = get_token('manoble3')
+    sp = spotipy.Spotify(auth=token)
+    sp.trace = False
+    new_playlist = sp.user_playlist_create('manoble3', 'new', public=True)
+    playlist_id = new_playlist['id']
+    sp.user_playlist_add_tracks(user, playlist_id, playlist, position=None)
+    
+def get_token(username):
 
+    token = util.prompt_for_user_token(username ,scope = 'playlist-modify-public',client_id='ec9bf5bbdcda4e3ebb4e5b3fe719f1ea',client_secret="2a0aede0c27246b19dff50617b4723b4",redirect_uri= 'https://mysite.com/redirect')
+    
+    if token:
+        return token
+    else:
+        print ("Can't get token for", username)
+        exit()
     
 if __name__ == "__main__":
     BPM()
