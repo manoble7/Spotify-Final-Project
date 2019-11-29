@@ -10,15 +10,40 @@ import spotipy
 import spotipy.oauth2 as oauth2
 import playlist_dictionary
 import random
+import spotipy.util as util
 
 
-def BPM():
+def reformat_input_string(input_str):
+    '''
+    This function will reformat the user input so that it matches the style of the keys in the playlist dictionary. This means, capitalized letters for each word and no spaces in between the words.
+
+    **Parameters**
+        inpiut: *str*
+            the input string given by the user
+
+    **Returns**
+        formatted_input: *str*
+            the user input reformatted to fit the style of the playlist dictionary
+    '''
+
+    formatted_input = input_str.capitalize().strip()
+
+    return formatted_input
+
+def BPM(min_BPM, max_BPM, music_type='Pop'):
     '''
     This function determines all of the songs in a certain playlist that are
     within the range for the BPM.
 
     **Parameters**
-        none
+        music_type: *str*
+            the genre of music the user wants the playlist to be. If none is specified, the default playlist to access is US top 100. 
+
+        min_BPM: *int* 
+            lower bound for BPM range, as specified by user
+
+        max_BPM: *int*
+            upper bound for BPM range, as specified by user
 
     **Returns**
 
@@ -29,11 +54,13 @@ def BPM():
     token = credentials.get_access_token()
     spotify = spotipy.Spotify(auth=token)
 
-    Mtype = 'EDM'
+    # Mtype = 'EDM'
     # Mtype = input("What type of music do you want? ")
     # BPM = input("What pace do you want? ")
 
-    type_uri = playlist_dictionary.get_playlist_ID(Mtype)
+    # print(music_type)
+
+    type_uri = playlist_dictionary.get_playlist_ID(music_type)
     tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
 
     good_songs = list()
@@ -111,4 +138,14 @@ def get_token(username):
         exit()
     
 if __name__ == "__main__":
-    BPM()
+    music_type_input = input("What type of music do you want? Type \"options\" to see available music types \n")
+    if music_type_input == 'options':
+        print([key for key in playlist_dictionary.get_keys()])
+        music_type_input = input("What type of music do you want? ")
+
+    music_type = reformat_input_string(music_type_input)
+    print("What pace do you want? Input your target BPM or BPM range")
+    min_BPM = input("Mininmum beats per minute (BPM): ")
+    max_BPM = input("Maximum beats per minute (BPM): ")
+
+    BPM(min_BPM, max_BPM, music_type)
