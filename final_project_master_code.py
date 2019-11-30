@@ -63,6 +63,9 @@ def BPM(min_BPM, max_BPM, music_type='Pop'):
     type_uri = playlist_dictionary.get_playlist_ID(music_type)
     tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
 
+    print('lalal')
+    print(tracks)
+
     good_songs = list()
     id_list = list()
     features = list()
@@ -70,7 +73,11 @@ def BPM(min_BPM, max_BPM, music_type='Pop'):
     loops_50 = len(tracks['items'])//50
     loops_remainder = len(tracks['items']) % 50
     counter = 0
-    BPM = 125
+    # BPM = 125
+
+    print('lele')
+    print(tracks['items'])
+    print(loops_50)
     
 
     for i in range(loops_50):
@@ -84,10 +91,20 @@ def BPM(min_BPM, max_BPM, music_type='Pop'):
         counter = counter + 1
     features.extend(spotify.audio_features(id_list))
 
-    for i in range(len(features)):
-        if features[i]['tempo'] >= BPM - 1 and features[i]['tempo'] <= BPM + 1:
-            good_songs.append(features[i]['id'])
-            good_song_times.append(features[i]['duration_ms'])
+    # if user specifies a single BPM then find songs with a range of +- 5 BPMs
+    if min_BPM == max_BPM:
+        BPM = min_BPM
+        for i in range(len(features)):
+            if features[i]['tempo'] >= BPM - 5 and features[i]['tempo'] <= BPM + 5:
+                good_songs.append(features[i]['id'])
+                good_song_times.append(features[i]['duration_ms'])
+
+    else:
+        for i in range(len(features)):
+            if features[i]['tempo'] >= min_BPM and features[i]['tempo'] <= max_BPM:
+                good_songs.append(features[i]['id'])
+                good_song_times.append(features[i]['duration_ms'])
+
 
     playlist_gen(good_songs, good_song_times, 3600000)
 
@@ -138,12 +155,14 @@ def get_token(username):
         exit()
     
 if __name__ == "__main__":
+
     music_type_input = input("What type of music do you want? Type \"options\" to see available music types \n")
     if music_type_input == 'options':
         print([key for key in playlist_dictionary.get_keys()])
         music_type_input = input("What type of music do you want? ")
 
     music_type = reformat_input_string(music_type_input)
+    
     print("What pace do you want? Input your target BPM or BPM range")
     min_BPM = input("Mininmum beats per minute (BPM): ")
     max_BPM = input("Maximum beats per minute (BPM): ")
