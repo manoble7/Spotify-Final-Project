@@ -30,7 +30,7 @@ def reformat_input_string(input_str):
 
     return formatted_input
 
-def BPM(min_BPM, max_BPM, music_type='Pop'):
+def BPM(min_BPM, max_BPM, music_type, username):
     '''
     This function determines all of the songs in a certain playlist that are
     within the range for the BPM.
@@ -63,9 +63,6 @@ def BPM(min_BPM, max_BPM, music_type='Pop'):
     type_uri = playlist_dictionary.get_playlist_ID(music_type)
     tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
 
-    print('lalal')
-    print(tracks)
-
     good_songs = list()
     id_list = list()
     features = list()
@@ -75,10 +72,6 @@ def BPM(min_BPM, max_BPM, music_type='Pop'):
     counter = 0
     # BPM = 125
 
-    print('lele')
-    print(tracks['items'])
-    print(loops_50)
-    
 
     for i in range(loops_50):
         for k in range(50):
@@ -106,10 +99,10 @@ def BPM(min_BPM, max_BPM, music_type='Pop'):
                 good_song_times.append(features[i]['duration_ms'])
 
 
-    playlist_gen(good_songs, good_song_times, 3600000)
+    playlist_gen(good_songs, good_song_times, 3600000, username)
 
 
-def playlist_gen(good_songs, good_song_times, time = 3600000):
+def playlist_gen(good_songs, good_song_times, time, username):
     
     '''
     This function takes all of the songs that have the correct BPM and creates
@@ -136,13 +129,13 @@ def playlist_gen(good_songs, good_song_times, time = 3600000):
         playlist_time = playlist_time + good_song_times[index]
         good_song_times.remove(good_song_times[index])
     
-    user = 'manoble3'
-    token = get_token('manoble3')
+    
+    token = get_token(username)
     sp = spotipy.Spotify(auth=token)
     sp.trace = False
     new_playlist = sp.user_playlist_create('manoble3', 'new', public=True)
     playlist_id = new_playlist['id']
-    sp.user_playlist_add_tracks(user, playlist_id, playlist, position=None)
+    sp.user_playlist_add_tracks(username, playlist_id, playlist, position=None)
     
 def get_token(username):
 
@@ -154,17 +147,21 @@ def get_token(username):
         print ("Can't get token for", username)
         exit()
     
-if __name__ == "__main__":
-
-    music_type_input = input("What type of music do you want? Type \"options\" to see available music types \n")
-    if music_type_input == 'options':
-        print([key for key in playlist_dictionary.get_keys()])
-        music_type_input = input("What type of music do you want? ")
-
-    music_type = reformat_input_string(music_type_input)
-    
-    print("What pace do you want? Input your target BPM or BPM range")
-    min_BPM = input("Mininmum beats per minute (BPM): ")
-    max_BPM = input("Maximum beats per minute (BPM): ")
-
-    BPM(min_BPM, max_BPM, music_type)
+#if __name__ == "__main__":
+#
+#    music_type_input = input("What type of music do you want? Type \"options\" to see available music types \n ")
+#    if music_type_input == 'options':
+#        print([key for key in playlist_dictionary.get_keys()])
+#        music_type_input = input("What type of music do you want? ")
+#
+#    #music_type = reformat_input_string(music_type_input)
+#    
+##    print("What pace do you want? Input your target BPM or BPM range")
+##    min_BPM = input("Mininmum beats per minute (BPM): ")
+##    max_BPM = input("Maximum beats per minute (BPM): ")
+#    music_type = "Pop"
+#    min_BPM = 90
+#    max_BPM = 140
+#    print(type(min_BPM))
+#    print(type(max_BPM))
+#    BPM(min_BPM, max_BPM, music_type)
