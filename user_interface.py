@@ -71,13 +71,23 @@ class App:
     
         self.contents = [self.minimum.get(), self.maximum.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get()]
         # do stuff with contents
-        self.close()
+        self.parent.destroy()
+        
 
     def close(self):
             self.parent.destroy()
 
     def get_info(self):
         return self.contents
+
+
+class pop_up:
+    
+    def __init__(self, parent, message): 
+        self.parent = parent
+        self.window = Label(self.parent, text=message)
+        self.window.pack()
+    
 
 def BPM_info():
     from PIL import Image, ImageTk
@@ -116,6 +126,8 @@ if __name__ == "__main__":
     info = app.get_info()
     mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5])
     
-
+    master = Tk()
+    end = pop_up(master, "Your playlist has been created!!")
+    master.mainloop()
 
 
