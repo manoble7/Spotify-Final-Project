@@ -11,6 +11,8 @@ import spotipy.oauth2 as oauth2
 import playlist_dictionary
 import random
 import spotipy.util as util
+from datetime import datetime
+from datetime import date
 
 
 def reformat_input_string(input_str):
@@ -102,11 +104,11 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
                 good_song_times.append(features[i]['duration_ms'])
 
     time = convert_time_to_msseconds(hours, minutes)
-    playlist_gen(good_songs, good_song_times, time, username)
+    playlist_gen(good_songs, good_song_times, time, username, music_type, min_BPM, max_BPM)
 
 
-def playlist_gen(good_songs, good_song_times, time, username):
-    
+def playlist_gen(good_songs, good_song_times, time, username, music_type, min_BPM, max_BPM):
+
     '''
     This function takes all of the songs that have the correct BPM and creates
     a playlist of the specified length
@@ -131,25 +133,36 @@ def playlist_gen(good_songs, good_song_times, time, username):
         good_songs.remove(choice)
         playlist_time = playlist_time + good_song_times[index]
         good_song_times.remove(good_song_times[index])
-    
-    
+
     token = get_token(username)
     sp = spotipy.Spotify(auth=token)
     sp.trace = False
-    new_playlist = sp.user_playlist_create('manoble3', 'new', public=True)
+    playlist_name = get_playlist_name(time, music_type, min_BPM, max_BPM)
+    new_playlist = sp.user_playlist_create('manoble3', playlist_name, public=True)
     playlist_id = new_playlist['id']
     sp.user_playlist_add_tracks(username, playlist_id, playlist, position=None)
-    
+
+
+def get_playlist_name(time, music_type, BPM_min, BPM_max):
+
+    BPM = str((BPM_min + BPM_max)/2)
+    hours = time // 3600000
+    minutes = (time % 3600000)/60000
+    current_date = str(date.today().strftime("%b_%d_%Y"))
+
+    return current_date + '_' + music_type + '_Hours:' + str(hours) + '_Minutes:' + str(minutes) + '_BPM:' + BPM
+
+
 def get_token(username):
 
-    token = util.prompt_for_user_token(username ,scope = 'playlist-modify-public',client_id='ec9bf5bbdcda4e3ebb4e5b3fe719f1ea',client_secret="2a0aede0c27246b19dff50617b4723b4",redirect_uri= 'https://mysite.com/redirect')
-    
+    token = util.prompt_for_user_token(username, scope = 'playlist-modify-public', client_id='ec9bf5bbdcda4e3ebb4e5b3fe719f1ea', client_secret="2a0aede0c27246b19dff50617b4723b4", redirect_uri= 'https://mysite.com/redirect')
+
     if token:
         return token
     else:
-        print ("Can't get token for", username)
+        print("Can't get token for", username)
         exit()
-    
+
 #if __name__ == "__main__":
 #
 #    music_type_input = input("What type of music do you want? Type \"options\" to see available music types \n ")

@@ -97,7 +97,7 @@ def BPM_info():
 if __name__ == "__main__":
     master = Tk()
     generes = [
-            ('Classic Rock'),
+            ('ClassicRock'),
             ("Pop"),
             ("R&B"),
             ("Rap"),
@@ -105,7 +105,7 @@ if __name__ == "__main__":
             ("Country"),
             ("EDM"),
             ("Calm"),
-            ("Indie Rock"),
+            ("IndieRock"),
             ("Instrumental")
         ]
     hours = [x for x in range(11)]
