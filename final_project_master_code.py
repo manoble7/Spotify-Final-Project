@@ -30,7 +30,10 @@ def reformat_input_string(input_str):
 
     return formatted_input
 
-def BPM(min_BPM, max_BPM, music_type, username):
+def convert_time_to_msseconds(hours, minutes):
+    return int(hours)*3600000 +int(minutes)*60000
+
+def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
     '''
     This function determines all of the songs in a certain playlist that are
     within the range for the BPM.
@@ -98,8 +101,8 @@ def BPM(min_BPM, max_BPM, music_type, username):
                 good_songs.append(features[i]['id'])
                 good_song_times.append(features[i]['duration_ms'])
 
-
-    playlist_gen(good_songs, good_song_times, 3600000, username)
+    time = convert_time_to_msseconds(hours, minutes)
+    playlist_gen(good_songs, good_song_times, time, username)
 
 
 def playlist_gen(good_songs, good_song_times, time, username):

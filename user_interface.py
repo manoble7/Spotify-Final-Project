@@ -18,42 +18,58 @@ import final_project_master_code as mc
 
 class App:
 
-    def __init__(self, parent, generes): 
+    def __init__(self, parent, generes, hours, minutes): 
         self.contents = list()
         self.parent = parent
         self.parent.title('Spotify BMP Playlist')
+
         self.variable = StringVar(parent)
         self.variable.set(generes[0])  # default value
-
         self.label = Label(self.parent, text='Choose the type of genere you would like to listen to')
-        self.label.pack()
-
+        self.label.grid(row=0, column=0, sticky=E)
         self.genere = OptionMenu(self.parent, self.variable, *generes)
-        self.genere.pack()
+        self.genere.grid(row=0, column=1, sticky=W)
+        
+        self.label = Label(self.parent, text='Put in the length you would like the playlist to be')
+        self.label.grid(row=1, column=0, rowspan=2, sticky=E)
+        self.variable1 = StringVar(parent)
+        self.variable1.set(hours[0])
+        self.label = Label(self.parent, text='Hours:')
+        self.label.grid(row=3, column=0, sticky=E)
+        self.hours = OptionMenu(self.parent, self.variable1, *hours)
+        self.hours.grid(row=3, column=1, sticky=W)
+        
+        self.variable2 = StringVar(parent)
+        self.variable2.set(minutes[0])
+        self.label = Label(self.parent, text='Minutes:')
+        self.label.grid(row=4, column=0, sticky=E)
+        self.hours = OptionMenu(self.parent, self.variable2, *minutes)
+        self.hours.grid(row=4, column=1, sticky=W)
 
-        self.label = Label(self.parent, text='Input the minimum value for the BPM range').pack()
+        self.label = Label(self.parent, text='Input the minimum value for the BPM range')
+        self.label.grid(row=5, column=0, sticky=E)
         self.minimum = Entry(self.parent, state=NORMAL)
-        self.minimum.pack()
+        self.minimum.grid(row=5, column=1, sticky=W)
 
         self.maximum = Label(self.parent, text='Input the maximum value for the BPM range')
-        self.maximum.pack()
+        self.maximum.grid(row=6, column=0, sticky=E)
         self.maximum = Entry(self.parent, state=NORMAL)
-        self.maximum.pack()
+        self.maximum.grid(row=6, column=1, sticky=W)
 
         self.user = Label(self.parent, text='Input your username ')
-        self.user.pack()
+        self.user.grid(row=7, column=0, sticky=E)
         self.user = Entry(self.parent, state=NORMAL)
-        self.user.pack()
+        self.user.grid(row=7, column=1, sticky=W)
 
         self.R = Button(self.parent, text="BPM Help", command =lambda : BPM_info())
-        self.R.pack()
+        self.R.grid(row=8, column=0, sticky=W)
         self.w = Button (self.parent, text='OK', command = lambda : self.use_entry())
-        self.w.pack()
+        self.w.grid(row=8, column=1)
 
         
     def use_entry(self):
     
-        self.contents = [self.minimum.get(), self.maximum.get(), self.variable.get(), self.user.get()]
+        self.contents = [self.minimum.get(), self.maximum.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get()]
         # do stuff with contents
         self.close()
 
@@ -62,7 +78,6 @@ class App:
 
     def get_info(self):
         return self.contents
-
 
 def BPM_info():
     from PIL import Image, ImageTk
@@ -76,6 +91,8 @@ def BPM_info():
     label.image = image
     label.pack()
     root.mainloop()
+
+
 
 if __name__ == "__main__":
     master = Tk()
@@ -91,11 +108,14 @@ if __name__ == "__main__":
             ("Indie Rock"),
             ("Instrumental")
         ]
+    hours = [x for x in range(11)]
+    minutes = [x for x in range(60)]
 
-    app = App(master, generes)
+    app = App(master, generes, hours, minutes)
     master.mainloop()
     info = app.get_info()
-    mc.BPM(int(info[0]), int(info[1]), info[2], info[3])
+    mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5])
+    
 
 
 
