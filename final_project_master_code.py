@@ -9,6 +9,7 @@
 import spotipy
 import spotipy.oauth2 as oauth2
 import playlist_dictionary
+import user_interface
 import random
 import spotipy.util as util
 from datetime import datetime
@@ -32,8 +33,9 @@ def reformat_input_string(input_str):
 
     return formatted_input
 
-def convert_time_to_msseconds(hours, minutes):
-    return int(hours)*3600000 +int(minutes)*60000
+
+def convert_time_to_mseconds(hours, minutes):
+    return int(hours) * 3600000 + int(minutes) * 60000
 
 def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
     '''
@@ -58,8 +60,50 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
     credentials = oauth2.SpotifyClientCredentials(client_id="ec9bf5bbdcda4e3ebb4e5b3fe719f1ea",client_secret="2a0aede0c27246b19dff50617b4723b4")
     token = credentials.get_access_token()
     spotify = spotipy.Spotify(auth=token)
+    time = convert_time_to_mseconds(hours, minutes)
+    playlist_time = 0
+    playlist = list()
+    counter = 0
+    used_id_list = list()
 
-    type_uri = playlist_dictionary.get_playlist_ID(music_type, counter=0)
+    good_songs, good_song_times = get_songs_in_BPM_range(spotify, music_type, counter, min_BPM, max_BPM)
+
+    while playlist_time < time:
+
+        if len(good_songs) == 0:
+            counter = counter + 1
+            if counter >= 6:
+                if playlist_time == 0:
+                    user_interface.pop_up_fun('no songs in that range')
+                    quit
+                else:
+                    playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM)
+                    user_interface.pop_up_fun('Your playlist has been created but there were not enough songs in that BPM range to meet your time limit')
+                    quit
+
+            good_songs, good_song_times = get_songs_in_BPM_range(spotify, music_type, counter, min_BPM, max_BPM)
+
+        else:
+            choice = random.choice(good_songs)
+            index = good_songs.index(choice)
+
+            if choice in used_id_list:
+                pass
+            else:
+                index = good_songs.index(choice)
+                playlist.append(choice)
+                playlist_time = playlist_time + good_song_times[index]
+                used_id_list.append(choice)
+
+            good_songs.remove(choice)
+            good_song_times.remove(good_song_times[index])
+
+    playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM)
+
+
+def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_BPM):
+
+    type_uri = playlist_dictionary.get_playlist_ID(music_type, playlist_counter)
     tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
 
     good_songs = list()
@@ -88,18 +132,16 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
             if features[i]['tempo'] >= BPM - 5 and features[i]['tempo'] <= BPM + 5:
                 good_songs.append(features[i]['id'])
                 good_song_times.append(features[i]['duration_ms'])
-
     else:
         for i in range(len(features)):
             if features[i]['tempo'] >= min_BPM and features[i]['tempo'] <= max_BPM:
                 good_songs.append(features[i]['id'])
                 good_song_times.append(features[i]['duration_ms'])
 
-    time = convert_time_to_msseconds(hours, minutes)
-    playlist_gen(good_songs, good_song_times, time, username, music_type, min_BPM, max_BPM)
+    return good_songs, good_song_times
 
 
-def playlist_gen(good_songs, good_song_times, time, username, music_type, min_BPM, max_BPM):
+def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM):
 
     '''
     This function takes all of the songs that have the correct BPM and creates
@@ -114,17 +156,6 @@ def playlist_gen(good_songs, good_song_times, time, username, music_type, min_BP
 
         none
     '''
-
-    playlist_time = 0
-    playlist = list()
-
-    while playlist_time < time:
-        choice = random.choice(good_songs)
-        index = good_songs.index(choice)
-        playlist.append(choice)
-        good_songs.remove(choice)
-        playlist_time = playlist_time + good_song_times[index]
-        good_song_times.remove(good_song_times[index])
 
     token = get_token(username)
     sp = spotipy.Spotify(auth=token)
@@ -147,7 +178,7 @@ def get_playlist_name(time, music_type, BPM_min, BPM_max):
 
 def get_token(username):
 
-    token = util.prompt_for_user_token(username, scope = 'playlist-modify-public', client_id='ec9bf5bbdcda4e3ebb4e5b3fe719f1ea', client_secret="2a0aede0c27246b19dff50617b4723b4", redirect_uri= 'https://mysite.com/redirect')
+    token = util.prompt_for_user_token(username, scope='playlist-modify-public', client_id='ec9bf5bbdcda4e3ebb4e5b3fe719f1ea', client_secret="2a0aede0c27246b19dff50617b4723b4", redirect_uri= 'https://mysite.com/redirect')
 
     if token:
         return token
@@ -155,21 +186,4 @@ def get_token(username):
         print("Can't get token for", username)
         exit()
 
-#if __name__ == "__main__":
-#
-#    music_type_input = input("What type of music do you want? Type \"options\" to see available music types \n ")
-#    if music_type_input == 'options':
-#        print([key for key in playlist_dictionary.get_keys()])
-#        music_type_input = input("What type of music do you want? ")
-#
-#    #music_type = reformat_input_string(music_type_input)
-#    
-##    print("What pace do you want? Input your target BPM or BPM range")
-##    min_BPM = input("Mininmum beats per minute (BPM): ")
-##    max_BPM = input("Maximum beats per minute (BPM): ")
-#    music_type = "Pop"
-#    min_BPM = 90
-#    max_BPM = 140
-#    print(type(min_BPM))
-#    print(type(max_BPM))
-#    BPM(min_BPM, max_BPM, music_type)
+
