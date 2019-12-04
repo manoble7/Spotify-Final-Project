@@ -82,22 +82,24 @@ class App:
     def get_info(self):
         return self.contents
 
+
 def pop_up_fun(message):
     master = Tk()
     end = pop_up_class(master, message)
     master.mainloop()
 
+
 class pop_up_class:
-    
-    def __init__(self, parent, message): 
+
+    def __init__(self, parent, message):
         self.parent = parent
         self.window = Label(self.parent, text=message)
         self.window.pack()
-    
+
 
 def BPM_info():
     from PIL import Image, ImageTk
-    
+
     root = tk.Tk()
     root.title('BPM Help')
     Label(root, text='The graph below can help you determine what \n your BPM is').pack()
@@ -112,16 +114,17 @@ def BPM_info():
 if __name__ == "__main__":
     master = Tk()
     generes = [
-            ('ClassicRock'),
-            ("Pop"),
-            ("R&B"),
+            ('ClassicRock: average BPM range= 90 - 130'),
+            ("Pop: average BPM range = 100 - 140"),
+            ("R&B: average BPM range = 80 - 110"),
             ("Rap"),
-            ("Jazz"),
+            ("Jazz: average BMP range = 60 - 120"),
             ("Country"),
-            ("EDM"),
-            ("Calm"),
+            ("EDM: average BPM range = 120 - 180"),
+            ("Calm: average BPM = 70 - 110"),
             ("IndieRock"),
-            ("Instrumental")
+            ("Instrumental: average BPM range = 85 - 125"),
+            ('HipHop: average BPM ranage = 80 - 115')
         ]
     hours = [x for x in range(11)]
     minutes = [x for x in range(60)]

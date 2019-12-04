@@ -78,7 +78,6 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
     # cliend id and secret come from
     credentials = oauth2.SpotifyClientCredentials(client_id="ec9bf5bbdcda4e3ebb4e5b3fe719f1ea", client_secret="2a0aede0c27246b19dff50617b4723b4")
     # get a token to access the app
-    print(credentials)
     token = credentials.get_access_token()
     # authorize the token
     spotify = spotipy.Spotify(auth=token)
@@ -152,8 +151,6 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
     # get the songs in the playlist
     tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
 
-    print('lala')
-    print(tracks[0])
 
     good_songs = list()  # list for songs that are in the specified range
     good_song_times = list()  # list of the durations of the good songs
@@ -190,6 +187,7 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
                 good_song_times.append(features[i]['duration_ms'])
     else:
         for i in range(len(features)):
+            print(features[i]['tempo'])
             if features[i]['tempo'] >= min_BPM and features[i]['tempo'] <= max_BPM:
                 good_songs.append(features[i]['id'])
                 good_song_times.append(features[i]['duration_ms'])
