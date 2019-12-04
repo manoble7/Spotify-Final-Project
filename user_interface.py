@@ -17,7 +17,7 @@ import final_project_master_code as mc
 
 class App:
 
-    def __init__(self, parent, generes, hours, minutes): 
+    def __init__(self, parent, generes, hours, minutes, BMP_nums): 
         self.contents = list()
         self.parent = parent
         self.parent.title('Spotify BMP Playlist')
@@ -44,15 +44,19 @@ class App:
         self.label.grid(row=4, column=0, sticky=E)
         self.hours = OptionMenu(self.parent, self.variable2, *minutes)
         self.hours.grid(row=4, column=1, sticky=W)
-
+        
+        self.variable_min = StringVar(parent)
+        self.variable_min.set(BPM_nums[0])
         self.label = Label(self.parent, text='Input the minimum value for the BPM range')
         self.label.grid(row=5, column=0, sticky=E)
-        self.minimum = Entry(self.parent, state=NORMAL)
+        self.minimum = OptionMenu(self.parent, self.variable_min, *BPM_nums)
         self.minimum.grid(row=5, column=1, sticky=W)
 
+        self.variable_max = StringVar(parent)
+        self.variable_max.set(BPM_nums[75])
         self.maximum = Label(self.parent, text='Input the maximum value for the BPM range')
         self.maximum.grid(row=6, column=0, sticky=E)
-        self.maximum = Entry(self.parent, state=NORMAL)
+        self.maximum = OptionMenu(self.parent, self.variable_max, *BPM_nums)
         self.maximum.grid(row=6, column=1, sticky=W)
 
         self.user = Label(self.parent, text='Input your username ')
@@ -68,7 +72,7 @@ class App:
 
     def use_entry(self):
     
-        self.contents = [self.minimum.get(), self.maximum.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get()]
+        self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get()]
         # do stuff with contents
         self.parent.destroy()
 
@@ -121,8 +125,9 @@ if __name__ == "__main__":
         ]
     hours = [x for x in range(11)]
     minutes = [x for x in range(60)]
+    BPM_nums = [x for x in range(50,180)]
 
-    app = App(master, generes, hours, minutes)
+    app = App(master, generes, hours, minutes, BPM_nums)
     master.mainloop()
     info = app.get_info()
     mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5])
