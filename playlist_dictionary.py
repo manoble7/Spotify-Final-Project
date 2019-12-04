@@ -86,4 +86,4 @@ def get_playlist_ID(key, counter):
                          'spotify:playlist:37i9dQZF1DX8NTLI2TtZa6']
         }
 
-    return playlists[key[counter]]
+    return playlists[key][counter]

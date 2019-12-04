@@ -78,6 +78,7 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
     # cliend id and secret come from
     credentials = oauth2.SpotifyClientCredentials(client_id="ec9bf5bbdcda4e3ebb4e5b3fe719f1ea", client_secret="2a0aede0c27246b19dff50617b4723b4")
     # get a token to access the app
+    print(credentials)
     token = credentials.get_access_token()
     # authorize the token
     spotify = spotipy.Spotify(auth=token)
@@ -87,6 +88,8 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
     playlist_time = 0  # length of the playlist that we are generating
     playlist = list()  # list for the Ids of the playlist
     counter = 0  # counter that keeps track of the playlist in the genere
+    used_id_list = list()
+
 
     good_songs, good_song_times = get_songs_in_BPM_range(spotify, music_type, counter, min_BPM, max_BPM)
     # loop through the playlists for a genere until either the target time is
@@ -148,6 +151,9 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
     type_uri = playlist_dictionary.get_playlist_ID(music_type, playlist_counter)
     # get the songs in the playlist
     tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
+
+    print('lala')
+    print(tracks[0])
 
     good_songs = list()  # list for songs that are in the specified range
     good_song_times = list()  # list of the durations of the good songs
@@ -214,7 +220,7 @@ def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM):
     # get playlist name
     playlist_name = get_playlist_name(time, music_type, min_BPM, max_BPM)
     # create the playlist
-    new_playlist = sp.user_playlist_create('manoble3', playlist_name, public=True)
+    new_playlist = sp.user_playlist_create(username, playlist_name, public=True)
     # get new playlists id
     playlist_id = new_playlist['id']
     # add tracks to the playlist
