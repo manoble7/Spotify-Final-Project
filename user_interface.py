@@ -11,7 +11,6 @@ matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import tkinter as tk
-from PIL import Image, ImageTk
 from tkinter import *
 import final_project_master_code as mc
 
@@ -66,13 +65,12 @@ class App:
         self.w = Button (self.parent, text='OK', command = lambda : self.use_entry())
         self.w.grid(row=8, column=1)
 
-        
+
     def use_entry(self):
     
         self.contents = [self.minimum.get(), self.maximum.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get()]
         # do stuff with contents
         self.parent.destroy()
-        
 
     def close(self):
             self.parent.destroy()
@@ -80,8 +78,12 @@ class App:
     def get_info(self):
         return self.contents
 
+def pop_up_fun(message):
+    master = Tk()
+    end = pop_up_class(master, message)
+    master.mainloop()
 
-class pop_up:
+class pop_up_class:
     
     def __init__(self, parent, message): 
         self.parent = parent
@@ -97,11 +99,10 @@ def BPM_info():
     Label(root, text='The graph below can help you determine what \n your BPM is').pack()
     image = Image.open('BPM_info.png')
     render = ImageTk.PhotoImage(image, master=root)
-    label = tk.Label(root, image = render)
+    label = tk.Label(root, image=render)
     label.image = image
     label.pack()
     root.mainloop()
-
 
 
 if __name__ == "__main__":
@@ -125,9 +126,7 @@ if __name__ == "__main__":
     master.mainloop()
     info = app.get_info()
     mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5])
+    pop_up_fun('Your playlist has been created!!')
     
-    master = Tk()
-    end = pop_up(master, "Your playlist has been created!!")
-    master.mainloop()
 
 
