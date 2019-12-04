@@ -59,13 +59,7 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
     token = credentials.get_access_token()
     spotify = spotipy.Spotify(auth=token)
 
-    # Mtype = 'EDM'
-    # Mtype = input("What type of music do you want? ")
-    # BPM = input("What pace do you want? ")
-
-    # print(music_type)
-
-    type_uri = playlist_dictionary.get_playlist_ID(music_type)
+    type_uri = playlist_dictionary.get_playlist_ID(music_type, counter=0)
     tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
 
     good_songs = list()
@@ -75,8 +69,6 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
     loops_50 = len(tracks['items'])//50
     loops_remainder = len(tracks['items']) % 50
     counter = 0
-    # BPM = 125
-
 
     for i in range(loops_50):
         for k in range(50):
