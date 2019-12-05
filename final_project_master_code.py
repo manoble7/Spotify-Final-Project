@@ -13,6 +13,7 @@ import user_interface
 import random
 import spotipy.util as util
 from datetime import date
+from tkinter import *
 
 
 def reformat_input_string(input_str):
@@ -104,13 +105,26 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
             counter += 1
             if counter >= 6:
                 if playlist_time == 0:
-                    user_interface.pop_up_fun('no songs in that range')
+                    user_interface.pop_up_fun('No songs are in that range. '
+                                              'No playlist was saved', 'Alert',
+                                              False)
                     quit
                 else:
-                    playlist_gen(playlist, time, username, music_type,
-                                 min_BPM, max_BPM)
+                    master = Tk()
+                    master.title('Alert')
+                    answer = user_interface.pop_up_class(master, 'There were not enough songs in that BPM range to meet your time limit\n Would you like to save the playlist anyway?', True)
+                    master.mainloop()
 
-                    user_interface.pop_up_fun('Your playlist has been created but there were not enough songs in that BPM range to meet your time limit')
+                    if answer.get_button():
+                        playlist_gen(playlist, time, username, music_type,
+                                     min_BPM, max_BPM, playlist_name)
+                        user_interface.pop_up_fun('The playlist was saved!',
+                                                  'Playlist completed',
+                                                  False)
+                    else:
+                        user_interface.pop_up_fun('No playlist was saved.',
+                                                  'Alert', False)
+
                     quit
             # generate new list of good songs and times from another playlist
             # from the specified genere
@@ -194,7 +208,10 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
             except TypeError:
                 counter += 1
                 pass
-        features.extend(spotify.audio_features(id_list))
+        try:
+            features.extend(spotify.audio_features(id_list))
+        except AttributeError:
+            pass
 
     id_list = list()
     for i in range(loops_remainder):
@@ -205,16 +222,22 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
             counter += 1
         except TypeError:
             counter += 1
-    features.extend(spotify.audio_features(id_list))
+    try:
+        features.extend(spotify.audio_features(id_list))
+    except AttributeError:
+        pass
 
     # if user specifies a single BPM then find songs with a range of +- 5 BPMs
     if min_BPM == max_BPM:
         BPM = min_BPM
         for i in range(len(features)):
             # get the tracks with the bpm in range
-            if features[i]['tempo'] >= BPM - 5 and features[i]['tempo'] <= BPM + 5:
-                good_songs.append(features[i]['id'])
-                good_song_times.append(features[i]['duration_ms'])
+            try:
+                if features[i]['tempo'] >= BPM - 5 and features[i]['tempo'] <= BPM + 5:
+                    good_songs.append(features[i]['id'])
+                    good_song_times.append(features[i]['duration_ms'])
+            except TypeError:
+                pass
     else:
 
         for i in range(len(features)):

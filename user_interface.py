@@ -114,15 +114,17 @@ class App:
         # check if the min is greater than the max
         if int(self.variable_min.get()) > int(self.variable_max.get()):
             pop_up_fun('Error: Min BPM cannot be larger than Max BPM',
-                       "Error")
+                       "Error", False)
 
         # check that the user put in a username
         elif self.user.get() == '':
-            pop_up_fun('Error: Please specify a Spotify username', "Error")
+            pop_up_fun('Error: Please specify a Spotify username', "Error",
+                       False)
 
         # check that the user specifies a length
         elif int(self.variable1.get()) == 0 and int(self.variable2.get()) == 0:
-            pop_up_fun('Error: Please specify the playlist length', "Error")
+            pop_up_fun('Error: Please specify the playlist length', "Error",
+                       False)
 
         else:
             self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get(), self.playlist_name.get()]
@@ -143,7 +145,7 @@ class App:
         return self.contents
 
 
-def pop_up_fun(message, title):
+def pop_up_fun(message, title, button):
     '''
         This function creates a pop up window to give the user information
 
@@ -158,17 +160,36 @@ def pop_up_fun(message, title):
     '''
     master = Tk()
     master.title(title)
-    end = pop_up_class(master, message)
+    end = pop_up_class(master, message, button)
     master.mainloop()
 
 
 class pop_up_class:
 
-    def __init__(self, parent, message):
+    def __init__(self, parent, message, button):
+
         self.parent = parent
         self.window = Label(self.parent, text=message)
-        self.window.pack()
+        self.window.grid(row=0, column=0, columnspan = 2)
+        if button:
+            self.w = Button(self.parent, text='Yes', command=lambda: self.button_get_true())
+            self.w.grid(row=1, column=0, sticky = E)
+            self.w = Button(self.parent, text='No', command=lambda: self.button_get_false())
+            self.w.grid(row=1, column=1, sticky = W)
+            
+    def button_get_true(self):
+        self.button_tf = True
+        self.parent.destroy()
 
+    def button_get_false(self):
+        self.button_tf = False
+        self.parent.destroy()
+        
+    def get_button(self):
+        return self.button_tf
+        
+    
+    
 
 def BPM_info():
     '''
@@ -210,7 +231,8 @@ if __name__ == "__main__":
             ("Calm: average BPM = 70 - 110"),
             ("IndieRock: average BPM range = 100 - 130"),
             ("Instrumental: average BPM range = 85 - 125"),
-            ('HipHop: average BPM ranage = 80 - 115')
+            ('HipHop: average BPM ranage = 80 - 115'),
+            ('Any genere')
         ]
     # creating lists for the user to pick from
     hours = [x for x in range(11)]
@@ -225,4 +247,4 @@ if __name__ == "__main__":
 
     mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5],
            info[6])
-    pop_up_fun('Your playlist has been created!!', 'Playlist Completed')
+    pop_up_fun('Your playlist has been created!!', 'Playlist Completed', False)
