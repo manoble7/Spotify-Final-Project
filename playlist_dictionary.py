@@ -108,7 +108,14 @@ def get_playlist_ID(key, counter):
             'spotify:playlist:37i9dQZF1DX692WcMwL2yW',
             'spotify:playlist:37i9dQZF1DX8Uebhn9wzrS',
             'spotify:playlist:37i9dQZF1DWYoYGBbGKurt',
-            'spotify:playlist:37i9dQZF1DX8NTLI2TtZa6']
+            'spotify:playlist:37i9dQZF1DX8NTLI2TtZa6'],
+
+        'Any genere': ['spotify:playlist:6aeG8saQTRQRdOmU2fPpj6',
+                       'spotify:playlist:37i9dQZF1DXcBWIGoYBM5M',
+                       'spotify:playlist:37i9dQZF1DX9oegrjMzKDW',
+                       'spotify:playlist:37i9dQZF1DWYJ5kmTbkZiz',
+                       'spotify:playlist:5SXcJ2VW1koQSEiItpMnZ3',
+                       'spotify:playlist:37i9dQZF1DX4UtSsGT1Sbe']
         }
 
     return playlists[key][counter]
