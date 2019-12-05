@@ -42,8 +42,8 @@ class App:
         self.variable2.set(minutes[0])
         self.label = Label(self.parent, text='Minutes:')
         self.label.grid(row=4, column=0, sticky=E)
-        self.hours = OptionMenu(self.parent, self.variable2, *minutes)
-        self.hours.grid(row=4, column=1, sticky=W)
+        self.minutes = OptionMenu(self.parent, self.variable2, *minutes)
+        self.minutes.grid(row=4, column=1, sticky=W)
         
         self.variable_min = StringVar(parent)
         self.variable_min.set(BPM_nums[0])
@@ -71,10 +71,23 @@ class App:
 
 
     def use_entry(self):
+        # pop_up_fun('type: ' + str(type(self.variable_min.get()))  +' value: '+ str(self.variable_min.get()))
+
+        if int(self.variable_min.get()) > int(self.variable_max.get()):
+            pop_up_fun('Error: Min BPM cannot be larger than Max BPM')
+
+        elif self.user.get() == None:
+            pop_up_fun('Error: Please specify a Spotify username')
+
+        elif int(self.variable1.get()) == 0 and int(self.variable2.get()) ==0:
+            pop_up_fun('Error: Please specify the playlist length')
+
+        else:
     
-        self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get()]
-        # do stuff with contents
-        self.parent.destroy()
+            self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get()]
+            # do stuff with contents
+            self.parent.destroy()
+
 
     def close(self):
             self.parent.destroy()
@@ -83,8 +96,9 @@ class App:
         return self.contents
 
 
-def pop_up_fun(message):
+def pop_up_fun(message, title = 'Error'):
     master = Tk()
+    master.title(title)
     end = pop_up_class(master, message)
     master.mainloop()
 
@@ -117,9 +131,9 @@ if __name__ == "__main__":
             ('ClassicRock: average BPM range= 90 - 130'),
             ("Pop: average BPM range = 100 - 140"),
             ("R&B: average BPM range = 80 - 110"),
-            ("Rap"),
+            ("Rap: average BPM range = 90 - 160"),
             ("Jazz: average BMP range = 60 - 120"),
-            ("Country"),
+            ("Country: average BPM range = 80 - 120"),
             ("EDM: average BPM range = 120 - 180"),
             ("Calm: average BPM = 70 - 110"),
             ("IndieRock"),
@@ -133,6 +147,7 @@ if __name__ == "__main__":
     app = App(master, generes, hours, minutes, BPM_nums)
     master.mainloop()
     info = app.get_info()
+
     mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5])
     pop_up_fun('Your playlist has been created!!')
     
