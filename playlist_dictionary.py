@@ -1,6 +1,5 @@
-import spotipy
 
-# Create dictionary with playlists to access given a particular genre parameter.
+# Create dictionary with playlists to access given a particular genre parameter
 
 # These are all playlists made by Spotify and updated fairly regularly (?)
 
@@ -40,11 +39,11 @@ def get_playlist_ID(key, counter):
                 'spotify:playlist:37i9dQZF1DX4SBhb3fqCJd'],
 
         'Rap': ['spotify:playlist:37i9dQZF1DXdnOj1VEuhgb',
-                'spotify:playlist:37i9dQZF1DWSIvbYYt1Dvi',
                 'spotify:playlist:37i9dQZF1DWU4xkXueiKGW',
                 'spotify:playlist:37i9dQZF1DWUQru3jd69v5',
                 'spotify:playlist:37i9dQZF1DXdhDukKQ88Cc',
-                'spotify:playlist:37i9dQZF1DX0XUsuxWHRQd'],
+                'spotify:playlist:37i9dQZF1DX0XUsuxWHRQd',
+                'spotify:playlist:0mW4R77jxPXSrkH6NqFIkk'],
 
         'Jazz: average BMP range = 60 - 120': [
                  'spotify:playlist:37i9dQZF1DX4wta20PHgwo',
@@ -63,7 +62,7 @@ def get_playlist_ID(key, counter):
                 'spotify:playlist:37i9dQZF1DX0HRj9P7NxeE'],
 
         'HipHop: average BPM ranage = 80 - 115': [
-                    'spotify:playlist:37i9dQZF1DWY4xHQp97fN6',
+                   'spotify:playlist:37i9dQZF1DWY4xHQp97fN6',
                    'spotify:playlist:37i9dQZF1DWTggY0yqBxES',
                    'spotify:playlist:37i9dQZF1DX2RxBh64BHjQ',
                    'spotify:playlist:37i9dQZF1DX6GwdWRQMQpq',
@@ -78,12 +77,13 @@ def get_playlist_ID(key, counter):
                  'spotify:playlist:37i9dQZF1DWWTdxbiocWOL',
                  'spotify:playlist:37i9dQZF1DXcr2UzLGERUU'],
 
-        'IndieRock': ['spotify:playlist:37i9dQZF1DX2Nc3B70tvx0',
+        'IndieRock: average BPM range = 100 - 130': [
+                      'spotify:playlist:37i9dQZF1DX35DWKgAk2B5',
                       'spotify:playlist:37i9dQZF1DWWEcRhUVtL8n',
+                      'spotify:playlist:37i9dQZF1DX26DKvjp0s9M',
                       'spotify:playlist:37i9dQZF1DWUoqEG4WY6ce',
                       'spotify:playlist:37i9dQZF1DXaRL7xbcDl7X',
-                      'spotify:playlist:37i9dQZF1DX2Nc3B70tvx0',
-                      'spotify:playlist:37i9dQZF1DX35DWKgAk2B5'],
+                      'spotify:playlist:37i9dQZF1DXdbXrPNafg9d'],
 
         'Instrumental: average BPM range = 85 - 125': [
                          'spotify:playlist:37i9dQZF1DWWQRwui0ExPn',
