@@ -17,7 +17,9 @@ from datetime import date
 
 def reformat_input_string(input_str):
     '''
-    This function will reformat the user input so that it matches the style of the keys in the playlist dictionary. This means, capitalized letters for each word and no spaces in between the words.
+    This function will reformat the user input so that it matches the style of
+    the keys in the playlist dictionary. This means, capitalized letters for
+    each word and no spaces in between the words.
 
     **Parameters**
         inpiut: *str*
@@ -89,8 +91,11 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
     counter = 0  # counter that keeps track of the playlist in the genere
     used_id_list = list()
 
+    # getting the songs from the music type
+    good_songs, good_song_times = get_songs_in_BPM_range(spotify, music_type,
+                                                         counter, min_BPM,
+                                                         max_BPM)
 
-    good_songs, good_song_times = get_songs_in_BPM_range(spotify, music_type, counter, min_BPM, max_BPM)
     # loop through the playlists for a genere until either the target time is
     # reached or the playlists are all used up
     while playlist_time < time:
@@ -102,12 +107,18 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
                     user_interface.pop_up_fun('no songs in that range')
                     quit
                 else:
-                    playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM)
+                    playlist_gen(playlist, time, username, music_type,
+                                 min_BPM, max_BPM)
+
                     user_interface.pop_up_fun('Your playlist has been created but there were not enough songs in that BPM range to meet your time limit')
                     quit
             # generate new list of good songs and times from another playlist
             # from the specified genere
-            good_songs, good_song_times = get_songs_in_BPM_range(spotify, music_type, counter, min_BPM, max_BPM)
+            good_songs, good_song_times = get_songs_in_BPM_range(spotify,
+                                                                 music_type,
+                                                                 counter,
+                                                                 min_BPM,
+                                                                 max_BPM)
 
         else:
             choice = random.choice(good_songs)
@@ -124,12 +135,13 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
 
             good_songs.remove(choice)
             good_song_times.remove(good_song_times[index])
- 
-    playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM, playlist_name)
+
+    playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM,
+                 playlist_name)
 
 
-
-def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_BPM):
+def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
+                           max_BPM):
     '''
     This function gets tracks from a playlist that are in the correct BPM range
 
@@ -149,16 +161,17 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
     '''
     # get the id of the playlist whose songs we are looking at
     # print(playlist_counter)
-    type_uri = playlist_dictionary.get_playlist_ID(music_type, playlist_counter)
+    type_uri = playlist_dictionary.get_playlist_ID(music_type,
+                                                   playlist_counter)
     # get the songs in the playlist
-    tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
-
-
+    tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri,
+                                          fields=None, limit=100, offset=0,
+                                          market=None)
 
     good_songs = list()  # list for songs that are in the specified range
     good_song_times = list()  # list of the durations of the good songs
     id_list = list()  # ids of songs used so that we do not repeat songs
-    features = list()  # list of the features of each song in the spotify playlist
+    features = list()  # list of the features of each song in the playlist
 
     # the audio_features function in spotipy only takes in 50 items at a time
     # the number of tracks in the playlist we are pulling from must be split
@@ -173,6 +186,8 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
     for i in range(loops_50):
         id_list = list()
         for k in range(50):
+            # try the bellow command because random tracks are None types
+            # if none type, pass over the index
             try:
                 id_list.append(tracks['items'][counter]['track']['id'])
                 counter = counter + 1
@@ -180,9 +195,11 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
                 counter = counter + 1
                 pass
         features.extend(spotify.audio_features(id_list))
-    
+
     id_list = list()
     for i in range(loops_remainder):
+        # try the bellow command because random tracks are None types
+        # if none type, pass over the index
         try:
             id_list.append(tracks['items'][counter]['track']['id'])
             counter = counter + 1
@@ -201,8 +218,9 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
     else:
 
         for i in range(len(features)):
+            # try because we are checking for Nonetype in the list
+            # if noneType, pass over the index
             try:
-                # print(features[i]['tempo'])
                 if features[i]['tempo'] >= min_BPM and features[i]['tempo'] <= max_BPM:
                     good_songs.append(features[i]['id'])
                     good_song_times.append(features[i]['duration_ms'])
@@ -212,7 +230,8 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
     return good_songs, good_song_times
 
 
-def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM, playlist_name):
+def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM,
+                 playlist_name):
 
     '''
     This function takes all of the songs that have the correct BPM and creates
@@ -236,15 +255,16 @@ def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM, playlis
     if playlist_name == '':
         playlist_name = get_playlist_name(time, music_type, min_BPM, max_BPM)
     # create the playlist
-    new_playlist = sp.user_playlist_create(username, playlist_name, public=True)
+    new_playlist = sp.user_playlist_create(username, playlist_name,
+                                           public=True)
     # get new playlists id
     playlist_id = new_playlist['id']
     # add tracks to the playlist but first check if the number of songs is
     # greater than 50 since we can only add 50 songs at a time
     if len(playlist) > 100:
         playlist_counter = 0
-        playlist_100_loops = len(playlist)//100
-        playlist_100_rem = len(playlist)%100
+        playlist_100_loops = len(playlist) // 100
+        playlist_100_rem = len(playlist) % 100
         playlist_counter = 0
 
         for i in range(playlist_100_loops):
@@ -252,15 +272,18 @@ def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM, playlis
             for k in range(100):
                 playlist_add.append(playlist[playlist_counter])
                 playlist_counter = playlist_counter + 1
-            sp.user_playlist_add_tracks(username, playlist_id, playlist_add, position=None)
+            sp.user_playlist_add_tracks(username, playlist_id, playlist_add,
+                                        position=None)
 
         playlist_add = list()
         for i in range(playlist_100_rem):
             playlist_add.append(playlist[playlist_counter])
             playlist_counter = playlist_counter + 1
-        sp.user_playlist_add_tracks(username, playlist_id, playlist_add, position=None)
+        sp.user_playlist_add_tracks(username, playlist_id, playlist_add,
+                                    position=None)
     else:
-        sp.user_playlist_add_tracks(username, playlist_id, playlist, position=None)
+        sp.user_playlist_add_tracks(username, playlist_id, playlist,
+                                    position=None)
 
 
 def get_playlist_name(time, music_type, BPM_min, BPM_max):
