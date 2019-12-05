@@ -101,7 +101,7 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
     while playlist_time < time:
 
         if len(good_songs) == 0:
-            counter = counter + 1
+            counter += 1
             if counter >= 6:
                 if playlist_time == 0:
                     user_interface.pop_up_fun('no songs in that range')
@@ -190,9 +190,9 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
             # if none type, pass over the index
             try:
                 id_list.append(tracks['items'][counter]['track']['id'])
-                counter = counter + 1
+                counter += 1
             except TypeError:
-                counter = counter + 1
+                counter += 1
                 pass
         features.extend(spotify.audio_features(id_list))
 
@@ -202,9 +202,9 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
         # if none type, pass over the index
         try:
             id_list.append(tracks['items'][counter]['track']['id'])
-            counter = counter + 1
+            counter += 1
         except TypeError:
-            counter = counter + 1
+            counter += 1
     features.extend(spotify.audio_features(id_list))
 
     # if user specifies a single BPM then find songs with a range of +- 5 BPMs
@@ -260,7 +260,7 @@ def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM,
     # get new playlists id
     playlist_id = new_playlist['id']
     # add tracks to the playlist but first check if the number of songs is
-    # greater than 50 since we can only add 50 songs at a time
+    # greater than 100 since we can only add 100 songs at a time
     if len(playlist) > 100:
         playlist_counter = 0
         playlist_100_loops = len(playlist) // 100
@@ -271,14 +271,14 @@ def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM,
             playlist_add = list()
             for k in range(100):
                 playlist_add.append(playlist[playlist_counter])
-                playlist_counter = playlist_counter + 1
+                playlist_counter += 1
             sp.user_playlist_add_tracks(username, playlist_id, playlist_add,
                                         position=None)
 
         playlist_add = list()
         for i in range(playlist_100_rem):
             playlist_add.append(playlist[playlist_counter])
-            playlist_counter = playlist_counter + 1
+            playlist_counter += 1
         sp.user_playlist_add_tracks(username, playlist_id, playlist_add,
                                     position=None)
     else:
