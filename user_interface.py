@@ -128,7 +128,6 @@ class App:
 
         else:
             self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get(), self.playlist_name.get()]
-            # do stuff with contents
             self.parent.destroy()
 
     def get_info(self):
@@ -154,42 +153,82 @@ def pop_up_fun(message, title, button):
                 message to tell the user
             title: *string*
                 title for the pop up box
+            button: *boolean*
+                whether or not there should be yes and no buttons in the
+                window
 
         **Returns**
             none
     '''
     master = Tk()
     master.title(title)
-    end = pop_up_class(master, message, button)
+    pop_up_class(master, message, button)
     master.mainloop()
 
 
 class pop_up_class:
 
     def __init__(self, parent, message, button):
+        '''
+        This function initializes the pop up windon
+
+        **Parameters**
+            parent: *object*
+                tkinter window object
+            message: *string*
+                message to tell the user
+            button: *boolean*
+                whether or not there should be yes and no buttons in the
+                window
+        **Returns**
+            none
+        '''
 
         self.parent = parent
         self.window = Label(self.parent, text=message)
-        self.window.grid(row=0, column=0, columnspan = 2)
+        self.window.grid(row=0, column=0, columnspan=2)
         if button:
-            self.w = Button(self.parent, text='Yes', command=lambda: self.button_get_true())
-            self.w.grid(row=1, column=0, sticky = E)
-            self.w = Button(self.parent, text='No', command=lambda: self.button_get_false())
-            self.w.grid(row=1, column=1, sticky = W)
-            
-    def button_get_true(self):
+            self.w = Button(self.parent, text='Yes', command=lambda: self.button_set_true())
+            self.w.grid(row=1, column=0, sticky=E)
+            self.w = Button(self.parent, text='No', command=lambda: self.button_set_false())
+            self.w.grid(row=1, column=1, sticky=W)
+
+    def button_set_true(self):
+        '''
+        This function says that yes was pushed
+
+        **Parameters**
+           none
+        **Returns**
+            none
+        '''
         self.button_tf = True
         self.parent.destroy()
 
-    def button_get_false(self):
+    def button_set_false(self):
+        '''
+        This function says that no was pushed
+
+        **Parameters**
+           none
+        **Returns**
+            none
+        '''
         self.button_tf = False
         self.parent.destroy()
-        
+
     def get_button(self):
+        '''
+        This function returns the button answer
+
+        **Parameters**
+           none
+        **Returns**
+            *boolean*
+            True if yes was pushed, false if no
+        '''
         return self.button_tf
-        
-    
-    
+
 
 def BPM_info():
     '''
