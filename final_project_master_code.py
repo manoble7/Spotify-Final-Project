@@ -53,7 +53,7 @@ def convert_time_to_mseconds(hours, minutes):
     return int(hours) * 3600000 + int(minutes) * 60000
 
 
-def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
+def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
     '''
     This function call another function to determine the songs that are in
     the specified BPM then it generates the playlist
@@ -125,7 +125,8 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes):
             good_songs.remove(choice)
             good_song_times.remove(good_song_times[index])
  
-    playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM)
+    playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM, playlist_name)
+
 
 
 def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_BPM):
@@ -147,7 +148,7 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
         the specified BPM
     '''
     # get the id of the playlist whose songs we are looking at
-    print(playlist_counter)
+    # print(playlist_counter)
     type_uri = playlist_dictionary.get_playlist_ID(music_type, playlist_counter)
     # get the songs in the playlist
     tracks = spotify.user_playlist_tracks('Spotify', playlist_id=type_uri, fields=None, limit=100, offset=0, market=None)
@@ -201,7 +202,7 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
 
         for i in range(len(features)):
             try:
-                print(features[i]['tempo'])
+                # print(features[i]['tempo'])
                 if features[i]['tempo'] >= min_BPM and features[i]['tempo'] <= max_BPM:
                     good_songs.append(features[i]['id'])
                     good_song_times.append(features[i]['duration_ms'])
@@ -211,7 +212,7 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM, max_B
     return good_songs, good_song_times
 
 
-def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM):
+def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM, playlist_name):
 
     '''
     This function takes all of the songs that have the correct BPM and creates
@@ -232,7 +233,8 @@ def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM):
     sp = spotipy.Spotify(auth=token)
     sp.trace = False
     # get playlist name
-    playlist_name = get_playlist_name(time, music_type, min_BPM, max_BPM)
+    if playlist_name == '':
+        playlist_name = get_playlist_name(time, music_type, min_BPM, max_BPM)
     # create the playlist
     new_playlist = sp.user_playlist_create(username, playlist_name, public=True)
     # get new playlists id

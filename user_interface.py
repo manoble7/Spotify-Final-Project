@@ -59,15 +59,20 @@ class App:
         self.maximum = OptionMenu(self.parent, self.variable_max, *BPM_nums)
         self.maximum.grid(row=6, column=1, sticky=W)
 
-        self.user = Label(self.parent, text='Input your username ')
-        self.user.grid(row=7, column=0, sticky=E)
+        self.playlist_name = Label(self.parent, text='New playlist name: ')
+        self.playlist_name.grid(row=7, column=0, sticky=E)
+        self.playlist_name = Entry(self.parent, state=NORMAL)
+        self.playlist_name.grid(row=7, column=1, sticky=W)
+
+        self.user = Label(self.parent, text='Input your Spotify username: ')
+        self.user.grid(row=8, column=0, sticky=E)
         self.user = Entry(self.parent, state=NORMAL)
-        self.user.grid(row=7, column=1, sticky=W)
+        self.user.grid(row=8, column=1, sticky=W)
 
         self.R = Button(self.parent, text="BPM Help", command =lambda : BPM_info())
-        self.R.grid(row=8, column=0, sticky=W)
+        self.R.grid(row=9, column=0, sticky=W)
         self.w = Button (self.parent, text='OK', command = lambda : self.use_entry())
-        self.w.grid(row=8, column=1)
+        self.w.grid(row=9, column=1)
 
 
     def use_entry(self):
@@ -76,7 +81,7 @@ class App:
         if int(self.variable_min.get()) > int(self.variable_max.get()):
             pop_up_fun('Error: Min BPM cannot be larger than Max BPM')
 
-        elif self.user.get() == None:
+        elif self.user.get() == '':
             pop_up_fun('Error: Please specify a Spotify username')
 
         elif int(self.variable1.get()) == 0 and int(self.variable2.get()) ==0:
@@ -84,7 +89,7 @@ class App:
 
         else:
     
-            self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get()]
+            self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get(), self.playlist_name.get()]
             # do stuff with contents
             self.parent.destroy()
 
@@ -136,7 +141,7 @@ if __name__ == "__main__":
             ("Country: average BPM range = 80 - 120"),
             ("EDM: average BPM range = 120 - 180"),
             ("Calm: average BPM = 70 - 110"),
-            ("IndieRock"),
+            ("IndieRock: average BPM range = 100 - 130"),
             ("Instrumental: average BPM range = 85 - 125"),
             ('HipHop: average BPM ranage = 80 - 115')
         ]
@@ -148,7 +153,7 @@ if __name__ == "__main__":
     master.mainloop()
     info = app.get_info()
 
-    mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5])
+    mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5], info[6])
     pop_up_fun('Your playlist has been created!!')
     
 
