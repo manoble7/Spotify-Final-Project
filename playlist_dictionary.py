@@ -5,9 +5,25 @@
 
 
 def get_playlist_ID(key, counter):
+    '''
+    This function take in a type of music and returns a playlist id for that
+    genere
+
+    **Parameters**
+        key: *string*
+            the string for the dictionary for the type of genere
+
+        counter: *int*
+            the number of playlist that we want
+
+    **Returns**
+        *string*
+        spotify id for playlist
+    '''
 
     playlists = {
-        'Country: average BPM range = 80 - 120': ['spotify:playlist:37i9dQZF1DX0XUsuxWHRQd',
+        'Country: average BPM range = 80 - 120': [
+            'spotify:playlist:37i9dQZF1DX0XUsuxWHRQd',
             'spotify:playlist:37i9dQZF1DWYnwbYQ5HnZU',
             'spotify:playlist:37i9dQZF1DX8WMG8VPSOJC',
             'spotify:playlist:37i9dQZF1DXaiEFNvQPZrM',
