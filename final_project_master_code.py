@@ -178,7 +178,6 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
         the specified BPM
     '''
     # get the id of the playlist whose songs we are looking at
-    # print(playlist_counter)
     type_uri = playlist_dictionary.get_playlist_ID(music_type,
                                                    playlist_counter)
     # get the songs in the playlist
@@ -293,15 +292,11 @@ def get_instrumental_songs(tracks_list, tracks_times):
     instr_songs = list()
     instr_song_times = list()
 
-    print('lala')
-    print(tracks_list[0])
-
     for i in range(len(tracks_list)):
         try:
             if tracks_list[i]['instrumentalness'] >= 0.8:
                 instr_songs.append(tracks_list[i]['id'])
                 instr_song_times.append(tracks_list[i]['duration_ms'])
-                print('lala')
 
         except TypeError:
             pass
@@ -412,5 +407,4 @@ def get_token(username):
         return token
     else:
         pop_up_fun('Can\'t get token for ' + str(username), 'Playlist Completed', False)
-        # print("Can't get token for", username)
         exit()
