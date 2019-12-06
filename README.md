@@ -5,18 +5,7 @@ Software Carpentry Fall 2019
 
 **To Do:**
 
-- [ ] Exception if user is not found (users for Spotify)
-- [ ] Add more filters: 
-    - [ ] Mood
-    - [ ] Energy 
 - [ ] Maybe Apple Watch thing where it takes your bpm and gives you the next song (queues a song that matches your bpms or the bpm you want to target)
-- [ ] Write the ReadMe file
-- [ ] Handle:
-    - [ ] If username doesn’t exist
-- [ ] Look into if token has expired how to regenerate without having to copy the link all the time
-- [ ] Add a random option for song genre that picks songs from all playlists as long as a target bpm/range is given
-    - [ ] Handle exception where no bpm is given
-- [ ] Toggle buttons for if user wants a range of bpm or a specified bpm
 
 ### Overview:
 Our Final Project for Software Carpentry class consists of a program that allows the user to generate a playlist based on a target BPM or BPM range. The program allows a user to specify the music genre they want to include in the playlist, the total duration of the playlist, and the BPM target or range that will match the type of activity to be done. The playlists generated can be used for anything from running, walking, yoga, meditation, or even sleep (try setting it to 8 hours of calm music). 
