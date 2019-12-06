@@ -18,7 +18,7 @@ Sometimes the program user gets redirected to what seems like a crashed website.
 
 The user interface contains a BPM Help button that will pull up information on the relation between BPM and running/walking velocity, in units that are easier for the user to relate. 
 
-### Running the code on Mac
+### Running the code
 To run the code open up Terminal and run the "user_interface.py" file using Python.
 The program uses the tkinter module - a graphic user interface for python. However, new macOS versions (particularly macOS Mojave version 10.14.6) has some trouble running tkinter in python version 3.7.3. To address this bug we created a file called "requirements.txt" that includes a list of versions of the packages and modules for which the program doesn't crash. We recommend to create a new environment, install all the requirements and finally run the user_interface.py file in that environment. 
 
@@ -34,6 +34,8 @@ Now you should be ready to run the program without problems.
 
 5. Run program with the call: python user_interface.py
    Make sure you are in the directory where the user_interface.py is located.
+6. Ensure that you are logged out of spotify in your web browswer. Next, fill out the user input window. If you have filled out all the fields correctly, once you press 'OK' you will be directed to the internet where you should copy the url that you are directed to into the terminal and press enter.
+
     
 
 ### Important Files:
