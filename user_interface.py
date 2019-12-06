@@ -63,41 +63,60 @@ class App:
         self.minutes = OptionMenu(self.parent, self.variable2, *minutes)
         self.minutes.grid(row=4, column=1, sticky=W)
 
+        # create a radiobuttons and react to the choice
+        self.range_or_target = StringVar(parent)
+        self.range_or_target.set('1')
+        self.button1 = Radiobutton(self.parent, text='Specify BPM range', variable=self.range_or_target, value=1, command=lambda: self.toggle_range_or_target(self.range_or_target.get()))
+        self.button1.grid(row=5, column=1, sticky=W)
+        self.button2 = Radiobutton(self.parent, text='Specify BPM target', variable=self.range_or_target, value=2, command=lambda: self.toggle_range_or_target(self.range_or_target.get()))
+        self.button2.grid(row=6, column=1, sticky=W)
+
+
         # create box and label for user to pick what BPM min they want
         self.variable_min = StringVar(parent)
         self.variable_min.set(BPM_nums[0])
-        self.label = Label(self.parent, text='Input the minimum value for the BPM range')
-        self.label.grid(row=5, column=0, sticky=E)
+        self.min_label = Label(self.parent, text='Input the minimum value for the BPM range')
         self.minimum = OptionMenu(self.parent, self.variable_min, *BPM_nums)
-        self.minimum.grid(row=5, column=1, sticky=W)
 
         # create box and label for user to pick what BPM max they want
         self.variable_max = StringVar(parent)
         self.variable_max.set(BPM_nums[75])
-        self.maximum = Label(self.parent, text='Input the maximum value for the BPM range')
-        self.maximum.grid(row=6, column=0, sticky=E)
+        self.max_label = Label(self.parent, text='Input the maximum value for the BPM range')
         self.maximum = OptionMenu(self.parent, self.variable_max, *BPM_nums)
-        self.maximum.grid(row=6, column=1, sticky=W)
+
+        # create box and label for user to pick what BPM target they want
+        self.variable_target = StringVar(parent)
+        self.variable_target.set(BPM_nums[50])
+        self.target_label = Label(self.parent, text='Input the target BPM value')
+        self.target = OptionMenu(self.parent, self.variable_target, *BPM_nums)
+
+        # create toggle box for 
+        self.var_instrumental = StringVar(parent)
+        # self.var_instrumental.set('0')
+        self.instrumental = Checkbutton(self.parent, text='Only instrumental music', variable=self.var_instrumental)
+        self.instrumental.grid(row=9, column=1, sticky=W)
+        # self.inst_label = Label(self.parent, text=str(self.var_instrumental.get()))
+        # self.inst_label.grid(row=9, column=0, sticky=E)
 
         # create box and label for user to write the playlist name
         self.playlist_name = Label(self.parent, text='New playlist name: ')
-        self.playlist_name.grid(row=7, column=0, sticky=E)
+        self.playlist_name.grid(row=10, column=0, sticky=E)
         self.playlist_name = Entry(self.parent, state=NORMAL)
-        self.playlist_name.grid(row=7, column=1, sticky=W)
+        self.playlist_name.grid(row=10, column=1, sticky=W)
 
         # create box and label for user to write their username
         self.user = Label(self.parent, text='Input your Spotify username: ')
-        self.user.grid(row=8, column=0, sticky=E)
+        self.user.grid(row=11, column=0, sticky=E)
         self.user = Entry(self.parent, state=NORMAL)
-        self.user.grid(row=8, column=1, sticky=W)
+        self.user.grid(row=11, column=1, sticky=W)
 
         # create button that pops up a help window for BPM
         self.R = Button(self.parent, text="BPM Help", command=lambda: BPM_info())
-        self.R.grid(row=9, column=0, sticky=W)
+        self.R.grid(row=12, column=0, sticky=W)
 
         # create an OK button that runs the program
         self.w = Button(self.parent, text='OK', command=lambda: self.use_entry())
-        self.w.grid(row=9, column=1)
+        self.w.grid(row=12, column=1)
 
     def use_entry(self):
         '''
@@ -127,12 +146,16 @@ class App:
                        False)
 
         else:
-            self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get(), self.playlist_name.get()]
-            self.parent.destroy()
+            if self.range_or_target.get() == '1':
+                self.contents = [self.variable_min.get(), self.variable_max.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get(), self.playlist_name.get(), self.var_instrumental.get()]
+                self.parent.destroy()
+            if self.range_or_target.get() == '2':
+                self.contents = [self.variable_target.get(), self.variable_target.get(), self.variable.get(), self.user.get(), self.variable1.get(), self.variable2.get(), self.playlist_name.get(), self.var_instrumental.get()]
+                self.parent.destroy()
 
     def get_info(self):
         '''
-        This function returns the contects of the user input
+        This function returns the contents of the user input
 
         **Parameters**
             none
@@ -142,6 +165,58 @@ class App:
             contents of user input
         '''
         return self.contents
+
+    def toggle_range_or_target(self, value):
+        '''
+        This function will let the user specify a BPM range or BPM target depending on what they choose for the radiobutton in the user interface
+        
+        **Parameters**
+
+            value: *str*
+                value corresponding to each option. 1 for BPM range, 2 for BPM target
+
+        **Returns**
+            none
+        '''
+
+        if value == '1':
+            self.target.destroy()
+            self.target_label.destroy()
+
+            # create box and label for user to pick what BPM min they want
+            self.variable_min = StringVar(self.parent)
+            self.variable_min.set(BPM_nums[0])
+            self.min_label = Label(self.parent, text='Input the minimum value for the BPM range')
+            self.min_label.grid(row=7, column=0, sticky=E)
+            self.minimum = OptionMenu(self.parent, self.variable_min, *BPM_nums)
+            self.minimum.grid(row=7, column=1, sticky=W)
+
+            # create box and label for user to pick what BPM max they want
+            self.variable_max = StringVar(self.parent)
+            self.variable_max.set(BPM_nums[75])
+            self.max_label = Label(self.parent, text='Input the maximum value for the BPM range')
+            self.max_label.grid(row=8, column=0, sticky=E)
+            self.maximum = OptionMenu(self.parent, self.variable_max, *BPM_nums)
+            self.maximum.grid(row=8, column=1, sticky=W)
+
+
+        if value == '2':
+            # create box and label for user to pick what BPM target they want
+            self.min_label.destroy()
+            self.minimum.destroy()
+            self.max_label.destroy()
+            self.maximum.destroy()
+
+            self.variable_target = StringVar(self.parent)
+            self.variable_target.set(BPM_nums[50])
+            self.target_label = Label(self.parent, text='Input the target BPM value')
+            self.target_label.grid(row=7, column=0, sticky=E)
+            self.target = OptionMenu(self.parent, self.variable_target, *BPM_nums)
+            self.target.grid(row=7, column=1, sticky=W)
+
+
+        if value != '1' and value != '2':
+            raise Exception('Value for button is not valid')
 
 
 def pop_up_fun(message, title, button):
@@ -257,6 +332,8 @@ def BPM_info():
     root.mainloop()
 
 
+
+
 if __name__ == "__main__":
     # generes that the user can pick from
     generes = [
@@ -285,5 +362,5 @@ if __name__ == "__main__":
     info = app.get_info()
 
     mc.BPM(int(info[0]), int(info[1]), info[2], info[3], info[4], info[5],
-           info[6])
+           info[6], info[7])
     pop_up_fun('Your playlist has been created!!', 'Playlist Completed', False)

@@ -56,7 +56,7 @@ def convert_time_to_mseconds(hours, minutes):
     return int(hours) * 3600000 + int(minutes) * 60000
 
 
-def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
+def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name, only_instrumental):
     '''
     This function call another function to determine the songs that are in
     the specified BPM then it generates the playlist
@@ -76,7 +76,7 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
 
         none
     '''
-    # get the credentials of teh app
+    # get the credentials of the app
     # the app is based on the spotify developer website and this is where the
     # cliend id and secret come from
     credentials = oauth2.SpotifyClientCredentials(client_id="ec9bf5bbdcda4e3ebb4e5b3fe719f1ea", client_secret="2a0aede0c27246b19dff50617b4723b4")
@@ -95,7 +95,8 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
     # getting the songs from the music type
     good_songs, good_song_times = get_songs_in_BPM_range(spotify, music_type,
                                                          counter, min_BPM,
-                                                         max_BPM)
+                                                         max_BPM, only_instrumental)
+
 
     # loop through the playlists for a genere until either the target time is
     # reached or the playlists are all used up
@@ -128,11 +129,13 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
                     quit
             # generate new list of good songs and times from another playlist
             # from the specified genere
+
             good_songs, good_song_times = get_songs_in_BPM_range(spotify,
                                                                  music_type,
                                                                  counter,
                                                                  min_BPM,
-                                                                 max_BPM)
+                                                                 max_BPM,
+                                                                 only_instrumental)
 
         else:
             choice = random.choice(good_songs)
@@ -155,7 +158,7 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name):
 
 
 def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
-                           max_BPM):
+                           max_BPM, only_instrumental):
     '''
     This function gets tracks from a playlist that are in the correct BPM range
 
@@ -165,6 +168,7 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
         in a specific genere
         min_BPM: user specified minimum BPM
         max_BPM: user specified maximum BPM
+        only_instrumental: *str* 1 if only instrumental, 0 if vocals are included
 
     **Returns**
 
@@ -186,6 +190,9 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
     good_song_times = list()  # list of the durations of the good songs
     id_list = list()  # ids of songs used so that we do not repeat songs
     features = list()  # list of the features of each song in the playlist
+    feat = list() #list of the features of each song for specifying instrumentalness
+    instr_songs = list() # list for songs that are in the specified range and instrumental
+    instr_song_times = list() # list of the durations of the instrumental songs
 
     # the audio_features function in spotipy only takes in 50 items at a time
     # the number of tracks in the playlist we are pulling from must be split
@@ -236,6 +243,7 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
                 if features[i]['tempo'] >= BPM - 5 and features[i]['tempo'] <= BPM + 5:
                     good_songs.append(features[i]['id'])
                     good_song_times.append(features[i]['duration_ms'])
+                    feat.append(features[i])
             except TypeError:
                 pass
     else:
@@ -247,10 +255,59 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
                 if features[i]['tempo'] >= min_BPM and features[i]['tempo'] <= max_BPM:
                     good_songs.append(features[i]['id'])
                     good_song_times.append(features[i]['duration_ms'])
+                    feat.append(features[i])
             except TypeError:
                 pass
 
+    if only_instrumental == '1':
+        for i in range(len(feat)):
+            try:
+                if feat[i]['instrumentalness'] >= 0.5:
+                    instr_songs.append(feat[i]['id'])
+                    instr_song_times.append(feat[i]['duration_ms'])
+
+            except TypeError:
+                pass
+
+        return instr_songs, instr_song_times
+
     return good_songs, good_song_times
+
+def get_instrumental_songs(tracks_list, tracks_times):
+    '''
+    This function filters a given list of tracks and saves only the ones that have a high instrumentalness, i.e. have a high likelyhood of being purely instrumental (no vocals).
+
+    **Parameters**
+        tracks_list: *list*
+            list of all the tracks to be filtered
+        tracks_times: *list*
+            list of the corresponding times (in miliseconds) for each track
+
+    **Returns**
+        instr_songs: *list*
+            list of all the ids of the filtered instrumental songs
+        instr_song_times: *list*
+            list of all the durations of the songs in the good_songs list
+
+    '''
+    instr_songs = list()
+    instr_song_times = list()
+
+    print('lala')
+    print(tracks_list[0])
+
+    for i in range(len(tracks_list)):
+        try:
+            if tracks_list[i]['instrumentalness'] >= 0.8:
+                instr_songs.append(tracks_list[i]['id'])
+                instr_song_times.append(tracks_list[i]['duration_ms'])
+                print('lala')
+
+        except TypeError:
+            pass
+
+
+    return instr_songs, instr_song_times
 
 
 def playlist_gen(playlist, time, username, music_type, min_BPM, max_BPM,
@@ -354,5 +411,6 @@ def get_token(username):
     if token:
         return token
     else:
-        print("Can't get token for", username)
+        pop_up_fun('Can\'t get token for ' + str(username), 'Playlist Completed', False)
+        # print("Can't get token for", username)
         exit()
