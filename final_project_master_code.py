@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+This code contains the functions for the spotify BPM playlist app.
 
+Sources
+    https://spotipy.readthedocs.io/en/latest/#client-credentials-flow
 
 @author: madelinenoble
 """
@@ -97,7 +100,6 @@ def BPM(min_BPM, max_BPM, music_type, username, hours, minutes, playlist_name, o
                                                          counter, min_BPM,
                                                          max_BPM, only_instrumental)
 
-
     # loop through the playlists for a genere until either the target time is
     # reached or the playlists are all used up
     while playlist_time < time:
@@ -178,6 +180,7 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
         the specified BPM
     '''
     # get the id of the playlist whose songs we are looking at
+    # print(playlist_counter)
     type_uri = playlist_dictionary.get_playlist_ID(music_type,
                                                    playlist_counter)
     # get the songs in the playlist
@@ -189,9 +192,9 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
     good_song_times = list()  # list of the durations of the good songs
     id_list = list()  # ids of songs used so that we do not repeat songs
     features = list()  # list of the features of each song in the playlist
-    feat = list() #list of the features of each song for specifying instrumentalness
-    instr_songs = list() # list for songs that are in the specified range and instrumental
-    instr_song_times = list() # list of the durations of the instrumental songs
+    feat = list()  # list of the features of each song for specifying instrumentalness
+    instr_songs = list()  # list for songs that are in the specified range and instrumental
+    instr_song_times = list()  # list of the durations of the instrumental songs
 
     # the audio_features function in spotipy only takes in 50 items at a time
     # the number of tracks in the playlist we are pulling from must be split
@@ -274,7 +277,9 @@ def get_songs_in_BPM_range(spotify, music_type, playlist_counter, min_BPM,
 
 def get_instrumental_songs(tracks_list, tracks_times):
     '''
-    This function filters a given list of tracks and saves only the ones that have a high instrumentalness, i.e. have a high likelyhood of being purely instrumental (no vocals).
+    This function filters a given list of tracks and saves only the ones that
+    have a high instrumentalness, i.e. have a high likelyhood of being purely
+    instrumental (no vocals).
 
     **Parameters**
         tracks_list: *list*
@@ -292,15 +297,18 @@ def get_instrumental_songs(tracks_list, tracks_times):
     instr_songs = list()
     instr_song_times = list()
 
+    print('lala')
+    print(tracks_list[0])
+
     for i in range(len(tracks_list)):
         try:
             if tracks_list[i]['instrumentalness'] >= 0.8:
                 instr_songs.append(tracks_list[i]['id'])
                 instr_song_times.append(tracks_list[i]['duration_ms'])
+                print('lala')
 
         except TypeError:
             pass
-
 
     return instr_songs, instr_song_times
 
@@ -407,4 +415,5 @@ def get_token(username):
         return token
     else:
         pop_up_fun('Can\'t get token for ' + str(username), 'Playlist Completed', False)
+        # print("Can't get token for", username)
         exit()
