@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov 27 21:52:28 2019
+This code runs the spotify BPM app and creates any user interfaces.
+
+Sources::
+    https://effbot.org/tkinterbook/optionmenu.htm
+    https://www.tutorialspoint.com/python/python_gui_programming.htm
 
 @author: madelinenoble
 """
@@ -65,7 +69,18 @@ class App:
 
         # create a radiobuttons and react to the choice
         self.range_or_target = StringVar(parent)
-        self.range_or_target.set('1')
+        self.range_or_target.set('2')
+        # self.toggle_range_or_target('1')
+        self.variable_target = StringVar(self.parent)
+
+        # set up the initial window - it will change depending on user input
+        self.variable_target.set(BPM_nums[50])
+        self.target_label = Label(self.parent, text='Input the target BPM value')
+        self.target_label.grid(row=7, column=0, sticky=E)
+        self.target = OptionMenu(self.parent, self.variable_target, *BPM_nums)
+        self.target.grid(row=7, column=1, sticky=W)
+
+        # set up togel buttons
         self.button1 = Radiobutton(self.parent, text='Specify BPM range', variable=self.range_or_target, value=1, command=lambda: self.toggle_range_or_target(self.range_or_target.get()))
         self.button1.grid(row=5, column=1, sticky=W)
         self.button2 = Radiobutton(self.parent, text='Specify BPM target', variable=self.range_or_target, value=2, command=lambda: self.toggle_range_or_target(self.range_or_target.get()))
@@ -173,13 +188,15 @@ class App:
         **Parameters**
 
             value: *str*
-                value corresponding to each option. 1 for BPM range, 2 for BPM target
+                value corresponding to each option. 1 for BPM range, 2 for 
+                BPM target
 
         **Returns**
             none
         '''
 
         if value == '1':
+
             self.target.destroy()
             self.target_label.destroy()
 
@@ -199,7 +216,6 @@ class App:
             self.maximum = OptionMenu(self.parent, self.variable_max, *BPM_nums)
             self.maximum.grid(row=8, column=1, sticky=W)
 
-
         if value == '2':
             # create box and label for user to pick what BPM target they want
             self.min_label.destroy()
@@ -213,7 +229,6 @@ class App:
             self.target_label.grid(row=7, column=0, sticky=E)
             self.target = OptionMenu(self.parent, self.variable_target, *BPM_nums)
             self.target.grid(row=7, column=1, sticky=W)
-
 
         if value != '1' and value != '2':
             raise Exception('Value for button is not valid')
@@ -330,8 +345,6 @@ def BPM_info():
     label.image = image
     label.pack()
     root.mainloop()
-
-
 
 
 if __name__ == "__main__":
