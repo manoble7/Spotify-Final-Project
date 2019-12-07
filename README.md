@@ -3,12 +3,10 @@
 Project by Madelaine Noble and Lucia Sablich
 Software Carpentry Fall 2019
 
-**To Do:**
 
-- [ ] Maybe Apple Watch thing where it takes your bpm and gives you the next song (queues a song that matches your bpms or the bpm you want to target)
 
 ### Overview:
-Our Final Project for Software Carpentry class consists of a program that allows the user to generate a playlist based on a target BPM or BPM range. The program allows a user to specify the music genre they want to include in the playlist, the total duration of the playlist, and the BPM target or range that will match the type of activity to be done. The playlists generated can be used for anything from running, walking, yoga, meditation, or even sleep (try setting it to 8 hours of calm music). 
+Our Final Project for Software Carpentry class consists of a program that allows the user to generate a playlist based on a target (Beats per minute)BPM or BPM range. The program allows a user to specify the music genre they want to include in the playlist, the total duration of the playlist, and the BPM target or range that will match the type of activity to be done. The playlists generated can be used for anything from running, walking, yoga, meditation, or even sleep (try setting it to 8 hours of calm music). You must have a spotify account to use this app.
 
 We used Spotify's API to search through existing playlists for the songs that match the user's specifications (bpm, mood, energy, genre) and extend a list of songs until the target time length of the activity is met. In order to access Spotify's API we created a developer ID which generated a set of credentials. These credentials authorize us to access Spotify's data in a secure manner, and allow us to create a playlist within a user's account (the user must first log in through the app). 
 
@@ -34,7 +32,7 @@ Now you should be ready to run the program without problems.
 
 5. Run program with the call: python user_interface.py
    Make sure you are in the directory where the user_interface.py is located.
-6. Ensure that you are logged out of spotify in your web browswer. Next, fill out the user input window. If you have filled out all the fields correctly, once you press 'OK' you will be directed to the internet where you should copy the url that you are directed to into the terminal and press enter.
+6. Ensure that you are logged out of spotify in your web browswer. Next, fill out the user input window. If you have filled out all the fields correctly, once you press 'OK' you will be directed to the internet where you should copy the url that you are directed to into the terminal and press enter. You may also be redirected to the internet to input your spotify account credentials. 
 
     
 
